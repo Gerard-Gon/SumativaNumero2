@@ -1,13 +1,13 @@
-package TechStoreChile.TechStoreChile.service;
+package cl.techstore.api.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import TechStoreChile.TechStoreChile.dto.ProductoDTO;
-import TechStoreChile.TechStoreChile.model.Producto;
-import TechStoreChile.TechStoreChile.repository.ProductoRepository;
+import cl.techstore.api.dto.ProductoDTO;
+import cl.techstore.api.model.Producto;
+import cl.techstore.api.repository.ProductoRepository;
 
 @Service
 public class ProductoService {

@@ -1,9 +1,9 @@
-package TechStoreChile.TechStoreChile.repository;
+package cl.techstore.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import TechStoreChile.TechStoreChile.model.Producto;
+import cl.techstore.api.model.Producto;
 
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {

@@ -1,4 +1,4 @@
-package TechStoreChile.TechStoreChile.dto;
+package cl.techstore.api.dto;
 
 
 import lombok.Data;

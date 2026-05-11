@@ -1,4 +1,4 @@
-package TechStoreChile.TechStoreChile.model;
+package cl.techstore.api.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

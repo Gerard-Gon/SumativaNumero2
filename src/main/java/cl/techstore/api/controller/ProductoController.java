@@ -1,4 +1,4 @@
-package TechStoreChile.TechStoreChile.controller;
+package cl.techstore.api.controller;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import TechStoreChile.TechStoreChile.dto.ProductoDTO;
-import TechStoreChile.TechStoreChile.model.Producto;
-import TechStoreChile.TechStoreChile.service.ProductoService;
+import cl.techstore.api.dto.ProductoDTO;
+import cl.techstore.api.model.Producto;
+import cl.techstore.api.service.ProductoService;
 
 @RestController
 @RequestMapping("/api/productos")
