@@ -34,8 +34,8 @@ public class ProductoController {
     @Autowired
     private SqsClient sqsClient;
 
-    // TODO: IMPORTANTE - Debes reemplazar esta URL por la URL real de tu cola en AWS Academy
-    private final String QUEUE_URL = "URL_DE_TU_COLA_SQS_AQUI";
+
+    private final String QUEUE_URL = "https://sqs.us-east-1.amazonaws.com/994995081324/techstore-audit-queue";
 
     @GetMapping
     public ResponseEntity<List<Producto>> listar() {
