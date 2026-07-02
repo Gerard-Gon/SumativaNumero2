@@ -1,0 +1,72 @@
+name: Deploy to Amazon ECS Fargate
+
+on:
+  push:
+    branches:
+      - main
+
+# IMPORTANTE: Debes actualizar estos valores con los nombres reales de tus recursos en AWS
+env:
+  AWS_REGION: us-east-1                   # Región de AWS Academy Learner Lab
+  ECR_REPOSITORY: techstore-api           # repositorio en ECR
+  ECS_CLUSTER: techstore-cluster          # clúster en ECS
+  ECS_SERVICE: techstore-service          # El nombre del servicio dentro del clúster ECS
+  CONTAINER_NAME: techstore-api           
+  ECS_TASK_DEFINITION: .aws/task-definition.json 
+
+jobs:
+  deploy:
+    name: Compilar, Construir y Desplegar
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Descargar el código del repositorio
+      uses: actions/checkout@v4
+
+    - name: 2. Configurar Java JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: 3. Compilar el proyecto con Maven
+      run: mvn clean package -DskipTests
+
+    - name: 4. Configurar Credenciales de AWS Academy
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: 5. Iniciar sesión en Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: 6. Construir imagen Docker, etiquetarla y subirla a ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: 7. Inyectar la nueva imagen en el archivo Task Definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: 8. Desplegar la actualización en Amazon ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
